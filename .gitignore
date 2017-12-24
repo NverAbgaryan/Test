@@ -1,0 +1,13 @@
+*node_modules
+/jsondata/
+/public/download
+/db.js
+*.DS_Store
+/.idea
+/Vagrantfile
+/.vagrant
+/logs
+*.css.map
+.env
+/npm-debug.log
+undefinedalgolift-app.log
