@@ -6,6 +6,10 @@ let gameModel = require('../db/gameSchema')
 
 const dogCount = 6
 
+let getRandomArbitrary = function (min, max) {
+  return Math.random() * (max - min) + min
+}
+
 let generateOdds = function () {
   let oddsForFirstPlace = []
   let oddsForSecondPlace = []
@@ -95,6 +99,12 @@ let generateOdds = function () {
     }
   )
 
+  firstPlaceNegative = firstPlace.map((odd) => {
+    let reverse = (1 / (profit - 1 / odd) - 0.02).toFixed(2)
+
+    return reverse < 1 ? 1 : reverse
+  })
+
   return {
     singleOdds: {
       positiveOdds: {
@@ -120,13 +130,9 @@ let generateOdds = function () {
 
     doubleOpportunity: {
       firstPlace: firstPlace,
-      firstPlaceNegative: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+      firstPlaceNegative: firstPlaceNegative
     }
   }
-}
-
-let getRandomArbitrary = function (min, max) {
-  return Math.random() * (max - min) + min
 }
 
 class Game {
@@ -199,7 +205,7 @@ class Game {
   }
 
   addBet(bet) {
-    return gameModel.findOne({where: {status: 'live'}})
+    return gameModel.findOne({status: 'live'})
     .then(function (game) {
       game.bets.push(bet)
       return game.save()
