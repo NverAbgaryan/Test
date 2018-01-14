@@ -21,7 +21,6 @@
         console.log('socket connected')
       },
       odds: function (val) {
-        console.log(val)
         if (val.odds && val.page === 'first') {
           if(this.$route.name !== 'first'){
             window.location.href = '#/'

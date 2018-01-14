@@ -11602,7 +11602,6 @@ module.exports = g;
       console.log('socket connected');
     },
     odds: function odds(val) {
-      console.log(val);
       if (val.odds && val.page === 'first') {
         if (this.$route.name !== 'first') {
           window.location.href = '#/';
