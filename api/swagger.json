@@ -1,0 +1,517 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "0.1.0",
+    "title": "Wicastr",
+    "description": "A message queuing infrastructure to send configuration parameters and events to remote machines."
+  },
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/nodes": {
+      "post": {
+        "summary": "Create/register a new node.",
+        "parameters": [
+          {
+            "name": "node",
+            "in": "body",
+            "description": "ID",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Node"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Node created",
+            "schema": {
+              "$ref": "#/definitions/Node"
+            }
+          },
+          "error": {
+            "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
+            "schema": {
+              "$ref": "#/definitions/standard"
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get a list of all registered nodes",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Nodes"
+            }
+          },
+          "error": {
+            "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
+            "schema": {
+              "$ref": "#/definitions/standard"
+            }
+          }
+        }
+      }
+    },
+    "/nodes/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/parameters/nodeId"
+        }
+      ],
+      "get": {
+        "summary": "Get information about the node with the provided ID",
+        "responses": {
+          "200": {
+            "description": "A node",
+            "schema": {
+              "$ref": "#/definitions/Node"
+            }
+          },
+          "error": {
+            "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
+            "schema": {
+              "$ref": "#/definitions/standard"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove the node with the provided ID",
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "error": {
+            "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
+            "schema": {
+              "$ref": "#/definitions/standard"
+            }
+          }
+        }
+      }
+    },
+    "/nodes/{id}/bus": {
+      "put": {
+        "summary": "Subscribe a node to a bus",
+        "parameters": [
+          {
+            "$ref": "#/parameters/contentType"
+          },
+          {
+            "$ref": "#/parameters/nodeId"
+          },
+          {
+            "name": "bus",
+            "in": "body",
+            "description": "Bus",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Bus"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "error": {
+            "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
+            "schema": {
+              "$ref": "#/definitions/standard"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Unsubscribe a node",
+        "parameters": [
+          {
+            "$ref": "#/parameters/nodeId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "error": {
+            "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
+            "schema": {
+              "$ref": "#/definitions/standard"
+            }
+          }
+        }
+      }
+    },
+    "/nodes/{id}/message": {
+      "post": {
+        "summary": "Send a Message to a specific node",
+        "description":"The endpoint works this way. It queues the incoming message immediately and tries to send it as soon as the other pending messages are sent. In case if sending is failed the system tries to send it after ﻿⁠⁠⁠⁠initialDelay﻿⁠⁠⁠⁠ seconds, then after ﻿⁠⁠⁠⁠2 x initialDelay﻿⁠⁠⁠⁠ seconds. Thereby, it doubles the delay after each retry. The number of retries is given as an additional parameter.  RetryCount Should be > 0 and <=10 also initialDelay should be > 0  and <= 6 seconds.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/nodeId"
+          },
+          {
+            "name": "Message",
+            "in": "body",
+            "description": "Messaging",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Message"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success"
+          },
+          "error": {
+            "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
+            "schema": {
+              "$ref": "#/definitions/standard"
+            }
+          }
+        }
+      }
+    },
+    "/nodes/{id}/deliveries": {
+      "get": {
+        "summary": "Get a list of statuses of deliveries",
+        "parameters": [
+          {
+            "$ref": "#/parameters/nodeId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "error": {
+            "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
+            "schema": {
+              "$ref": "#/definitions/standard"
+            }
+          }
+        }
+      }
+    },
+    "/nodes/{id}/online": {
+      "post": {
+        "summary": "Notify the server that the specified node came online",
+        "parameters": [
+          {
+            "$ref": "#/parameters/nodeId"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success"
+          },
+          "error": {
+            "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
+            "schema": {
+              "$ref": "#/definitions/standard"
+            }
+          }
+        }
+      }
+    },
+    "/buses": {
+      "post": {
+        "summary": "Create a new bus.",
+        "parameters": [
+          {
+            "name": "Bus",
+            "in": "body",
+            "description": "created new bus",
+            "required": null,
+            "schema": {
+              "$ref": "#/definitions/Bus"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Bus created",
+            "schema": {
+              "$ref": "#/definitions/Bus"
+            }
+          },
+          "error": {
+            "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
+            "schema": {
+              "$ref": "#/definitions/standard"
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get a list of all buses",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Buses"
+            }
+          },
+          "error": {
+            "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
+            "schema": {
+              "$ref": "#/definitions/standard"
+            }
+          }
+        }
+      }
+    },
+    "/buses/{id}": {
+      "delete": {
+        "summary": "Unsubscribe a bus",
+        "parameters": [
+          {
+            "$ref": "#/parameters/busId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          },
+          "error": {
+            "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
+            "schema": {
+              "$ref": "#/definitions/standard"
+            }
+          }
+        }
+      }
+    },
+    "/buses/{id}/nodes": {
+      "get": {
+        "summary": "Get nodes a bus",
+        "parameters": [
+          {
+            "$ref": "#/parameters/busId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "error": {
+            "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
+            "schema": {
+              "$ref": "#/definitions/standard"
+            }
+          }
+        }
+      }
+    },
+    "/buses/{id}/messages": {
+      "get": {
+        "summary": "Unsubscribe a bus",
+        "parameters": [
+          {
+            "$ref": "#/parameters/busId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "error": {
+            "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
+            "schema": {
+              "$ref": "#/definitions/standard"
+            }
+          }
+        }
+      }
+    },
+    "/buses/{id}/message": {
+      "post": {
+        "summary": "Send a Message to a specific bus",
+        "description":"The endpoint works this way. It queues the incoming message immediately and tries to send it as soon as the other pending messages are sent. In case if sending is failed the system tries to send it after ﻿⁠⁠⁠⁠initialDelay﻿⁠⁠⁠⁠ seconds, then after ﻿⁠⁠⁠⁠2 x initialDelay﻿⁠⁠⁠⁠ seconds. Thereby, it doubles the delay after each retry. The number of retries is given as an additional parameter.  RetryCount Should be > 0 and <=10 also initialDelay should be > 0  and <= 6 seconds.",
+        "parameters": [
+          {
+            "$ref": "#/parameters/busId"
+          },
+          {
+            "name": "Message",
+            "in": "body",
+            "description": "Messaging",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Message"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success"
+          },
+          "error": {
+            "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
+            "schema": {
+              "$ref": "#/definitions/standard"
+            }
+          }
+        }
+      }
+    },
+    "/message/{id}/info": {
+      "get": {
+        "summary": "Get Message Info",
+        "parameters": [
+          {
+            "$ref": "#/parameters/messageId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "error": {
+            "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
+            "schema": {
+              "$ref": "#/definitions/standard"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Node": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "bus": {
+          "$ref": "#/definitions/Bus"
+        }
+      }
+    },
+    "Nodes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Node"
+      }
+    },
+    "Bus": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "Buses": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Bus"
+      }
+    },
+    "Message": {
+      "properties": {
+        "retryCount": {
+          "type": "number",
+          "default": 5
+        },
+        "initialDelay": {
+          "type": "number",
+          "default": 1
+        },
+        "message": {
+          "type": "object"
+        }
+      }
+    },
+    "standard": {
+      "properties": {
+        "status": {
+          "type": "string",
+          "default": "Request completion status"
+        },
+        "message": {
+          "type": "string",
+          "default": "Server error message"
+        },
+        "details": {
+          "type": "object",
+          "default": {
+            "message": "Detailed JSON validation message",
+            "params": "Invalid parameters and/or parameters types",
+            "dataPath": "Data path of invalid JSON element"
+          }
+        }
+      }
+    },
+    "Configs": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "nodeId": {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "description": "Node ID",
+      "type": "string"
+    },
+    "busId": {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "description": "Bus ID",
+      "type": "string"
+    },
+    "messageId": {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "description": "Message ID",
+      "type": "string"
+    },
+    "contentType": {
+      "name": "Content-Type",
+      "in": "header",
+      "required": true,
+      "type": "string"
+    },
+    "projectId": {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "description": "Project Id",
+      "type": "string"
+    },
+    "deviceId": {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "description": "Device Id",
+      "type": "string"
+    },
+    "mergedId": {
+      "name": "id",
+      "in": "path",
+      "required": true,
+      "description": "Merged Id",
+      "type": "string"
+    }
+  }
+}
