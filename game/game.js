@@ -41,7 +41,7 @@ let generateOdds = function () {
     max += 0.5
   }
 
-  console.log(profit)
+  console.log(`The percentage of profit is ${profit}`)
 
   if (profit < 1.1 /* 10% income */) { // TODO: Should be moved to env variables.
     throw new Error('Something gone wrong..')
@@ -74,7 +74,6 @@ let generateOdds = function () {
 
     return reverse < 1 ? 1 : reverse
   })
-
 
   let doubleOdds = []
   for (let i = 0; i < dogCount; ++i) {

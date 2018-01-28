@@ -1,4 +1,4 @@
-const gameModel = require('../db/gameSchema')
+const gameModel = require('../../db/gameSchema')
 const moment = require('moment')
 
 const video = 'video'
@@ -11,7 +11,6 @@ const third = 'third'
 let getSettings = function (currentGame) {
   let start = moment(currentGame.createdDate)
   let diff = moment().diff(start, 'seconds')
-
   if (diff < 90) {
     return {
       time: diff,
@@ -49,6 +48,7 @@ let getSettings = function (currentGame) {
     if (winner) {
       return {
         time: diff,
+        odds: currentGame.odds,
         status: video,
         page: third,
         videoUrl: '',
@@ -65,6 +65,7 @@ let getSettings = function (currentGame) {
 
   }
 }
+
 module.exports = (io) => {
 
   io.on('connection', function (client) {

@@ -12,12 +12,15 @@
     "watch": "webpack --watch"
   },
   "dependencies": {
+    "bluebird": "^3.5.1",
     "dotenv": "^4.0.0",
     "koa": "^2.4.1",
+    "koa-body": "^2.5.0",
     "koa-bodyparser": "^4.2.0",
+    "koa-router": "^7.0.1",
     "koa-static": "^4.0.2",
     "moment": "^2.20.1",
-    "mongoose": "^4.13.9",
+    "mongoose": "^4.13.10",
     "socket.io": "^2.0.4",
     "swagger-injector": "^4.0.0"
   },

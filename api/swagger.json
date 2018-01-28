@@ -9,26 +9,23 @@
     "http"
   ],
   "paths": {
-    "/nodes": {
+    "/bet": {
       "post": {
-        "summary": "Create/register a new node.",
+        "summary": "Add bet .",
         "parameters": [
           {
-            "name": "node",
+            "name": "bet",
             "in": "body",
             "description": "ID",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/Node"
+              "$ref": "#/definitions/Bets"
             }
           }
         ],
         "responses": {
           "201": {
-            "description": "Node created",
-            "schema": {
-              "$ref": "#/definitions/Node"
-            }
+            "description": "Node created"
           },
           "error": {
             "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
@@ -42,10 +39,7 @@
         "summary": "Get a list of all registered nodes",
         "responses": {
           "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/Nodes"
-            }
+            "description": "OK"
           },
           "error": {
             "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
@@ -66,10 +60,7 @@
         "summary": "Get information about the node with the provided ID",
         "responses": {
           "200": {
-            "description": "A node",
-            "schema": {
-              "$ref": "#/definitions/Node"
-            }
+            "description": "A node"
           },
           "error": {
             "description": "404, 409 error responses contain 2 fields - ﻿⁠⁠⁠⁠status﻿⁠⁠⁠⁠ and ﻿⁠⁠⁠⁠message﻿⁠⁠⁠⁠. For error 422 a ﻿⁠⁠⁠⁠details﻿⁠⁠⁠⁠ field is also returned.If invalid JSON string is submitted (i.e. missing a bracket), server returns ﻿⁠⁠⁠⁠400 Bad Request﻿⁠⁠⁠⁠ error without a response body.",
@@ -149,7 +140,7 @@
     "/nodes/{id}/message": {
       "post": {
         "summary": "Send a Message to a specific node",
-        "description":"The endpoint works this way. It queues the incoming message immediately and tries to send it as soon as the other pending messages are sent. In case if sending is failed the system tries to send it after ﻿⁠⁠⁠⁠initialDelay﻿⁠⁠⁠⁠ seconds, then after ﻿⁠⁠⁠⁠2 x initialDelay﻿⁠⁠⁠⁠ seconds. Thereby, it doubles the delay after each retry. The number of retries is given as an additional parameter.  RetryCount Should be > 0 and <=10 also initialDelay should be > 0  and <= 6 seconds.",
+        "description": "The endpoint works this way. It queues the incoming message immediately and tries to send it as soon as the other pending messages are sent. In case if sending is failed the system tries to send it after ﻿⁠⁠⁠⁠initialDelay﻿⁠⁠⁠⁠ seconds, then after ﻿⁠⁠⁠⁠2 x initialDelay﻿⁠⁠⁠⁠ seconds. Thereby, it doubles the delay after each retry. The number of retries is given as an additional parameter.  RetryCount Should be > 0 and <=10 also initialDelay should be > 0  and <= 6 seconds.",
         "parameters": [
           {
             "$ref": "#/parameters/nodeId"
@@ -332,7 +323,7 @@
     "/buses/{id}/message": {
       "post": {
         "summary": "Send a Message to a specific bus",
-        "description":"The endpoint works this way. It queues the incoming message immediately and tries to send it as soon as the other pending messages are sent. In case if sending is failed the system tries to send it after ﻿⁠⁠⁠⁠initialDelay﻿⁠⁠⁠⁠ seconds, then after ﻿⁠⁠⁠⁠2 x initialDelay﻿⁠⁠⁠⁠ seconds. Thereby, it doubles the delay after each retry. The number of retries is given as an additional parameter.  RetryCount Should be > 0 and <=10 also initialDelay should be > 0  and <= 6 seconds.",
+        "description": "The endpoint works this way. It queues the incoming message immediately and tries to send it as soon as the other pending messages are sent. In case if sending is failed the system tries to send it after ﻿⁠⁠⁠⁠initialDelay﻿⁠⁠⁠⁠ seconds, then after ﻿⁠⁠⁠⁠2 x initialDelay﻿⁠⁠⁠⁠ seconds. Thereby, it doubles the delay after each retry. The number of retries is given as an additional parameter.  RetryCount Should be > 0 and <=10 also initialDelay should be > 0  and <= 6 seconds.",
         "parameters": [
           {
             "$ref": "#/parameters/busId"
@@ -383,24 +374,57 @@
     }
   },
   "definitions": {
-    "Node": {
+    "Bets": {
+      "type": "array",
       "required": [
-        "id"
+        "betId",
+        "betType",
+        "amount",
+        "secondType",
+        "odd",
+        "profit",
+        "position"
       ],
       "properties": {
-        "id": {
+        "betId": {
+          "type": "number"
+        },
+        "betType": {
           "type": "string"
         },
-        "bus": {
-          "$ref": "#/definitions/Bus"
+        "secondType": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "number"
+        },
+        "odd":{
+          "type":"number"
+        },
+        "profit":{
+          "type":"number"
+        },
+        "position":{
+          "$ref": "#/definitions/Position"
+        }
+      }
+    },
+    "Position":{
+      "required": [
+        "horizontal",
+         "vertical"
+      ],
+      "properties": {
+        "vertical": {
+          "type": "number"
+        },
+        "horizontal": {
+          "type": "number"
         }
       }
     },
     "Nodes": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/Node"
-      }
+      "type": "array"
     },
     "Bus": {
       "required": [

@@ -22,7 +22,7 @@ module.exports = () => {
         console.log('Mongoose default connection disconnected')
     })
 
-// If the Node process ends, close the Mongoose connection
+    // If the Node process ends, close the Mongoose connection
     process.on('SIGINT', function () {
         mongoose.connection.close(function () {
             console.log('Mongoose default connection disconnected through app termination')

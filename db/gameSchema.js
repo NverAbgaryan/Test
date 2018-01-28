@@ -2,55 +2,67 @@ let mongoose = require('mongoose')
 let Schema = mongoose.Schema
 
 let Games = new Schema({
-    gameId: {
-        type: Number,
-        default: 0
+  gameId: {
+    type: Number,
+    default: 0
+  },
+  status: {
+    type: String,
+    enum: ['live', 'finished'],
+    default: 'live'
+  },
+  bets: [{
+    betId: {
+      type: Number,
+      required: true,
     },
-    status: {
-        type: String,
-        enum: ['live', 'finished'],
-        default: 'live'
+    amount: {
+      type: Number,
+      required: true
     },
-    bets: [{
-        betId: {
-            type: Number,
-            required: true,
-        },
-        amount: {
-            type: Number,
-            required: true
-        },
-        betType: {
-            type: Number,
-            required: true
-        }
-    }],
-    odds: {
-        type: String,
-        required: true
+    secondType: {
+      type: String,
+      required: true
     },
-    winner: {
-        type: Object
+    profit: {
+      type: Number,
+      required: true
     },
-    createdDate: {
-        type: Date,
-        required: true,
-        default: Date.now
+    position: {
+      type: Object,
+      required: true
     },
-    modifiedDate: {
-        type: Date,
-        required: true,
-        default: Date.now
+    betType: {
+      type: String,
+      required: true
     }
+  }],
+  odds: {
+    type: String,
+    required: true
+  },
+  winner: {
+    type: Object
+  },
+  createdDate: {
+    type: Date,
+    required: true,
+    default: Date.now
+  },
+  modifiedDate: {
+    type: Date,
+    required: true,
+    default: Date.now
+  }
 
 }, {
-    collection: 'Game'
+  collection: 'Game'
 })
 
 
 Games.pre('save', function (next) {
-    this.modifiedDate = new Date
-    next()
+  this.modifiedDate = new Date
+  next()
 })
 
 
@@ -59,5 +71,5 @@ let GamesModel = mongoose.model('Game', Games)
 module.exports = GamesModel
 
 module.exports.count = GamesModel.find({}).count().then(function (count) {
-    return count
+  return count
 })

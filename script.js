@@ -7,6 +7,7 @@ gameModel.findOne({status: 'live'}).then(function (result) {
         result.status = 'finished'
         result.save()
     }
+
     let gameId = result ? result.gameId + 1 : 1
     global.game.addGame(gameId).then(function () {
         process.exit(1)
