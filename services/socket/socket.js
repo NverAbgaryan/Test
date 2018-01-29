@@ -8,7 +8,7 @@ const first = 'first'
 const second = 'second'
 const third = 'third'
 
-let getSettings = function (currentGame) {
+let getSettings =  function (currentGame) {
   let start = moment(currentGame.createdDate)
   let diff = moment().diff(start, 'seconds')
   if (diff < 90) {
@@ -31,7 +31,9 @@ let getSettings = function (currentGame) {
       }]
     }
   } else if (diff < 120) {
-    global.game.calculateWinner(currentGame)
+    if(!global.game.calculating){
+      global.game.calculateWinner(currentGame)
+    }
     return {
       time: diff,
       odds: currentGame.odds,
@@ -45,7 +47,7 @@ let getSettings = function (currentGame) {
     }
   } else {
     let winner = global.game.getWinner()
-    if (winner) {
+    if (winner && winner.hasOwnProperty('first')) {
       return {
         time: diff,
         odds: currentGame.odds,

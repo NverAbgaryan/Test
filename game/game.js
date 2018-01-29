@@ -139,9 +139,11 @@ class Game {
   constructor() {
     console.log('Starting the game...')
     this.winner = {}
+    this.calculating = false
   }
 
   addGame(gameId) {
+    this.calculating = false
     return gameModel.count.then((count) => {
       let game = new gameModel({gameId: gameId, odds: JSON.stringify(generateOdds())})
       return game.save()
@@ -149,16 +151,65 @@ class Game {
   }
 
   calculateResult(first, second, third, bet) {
-    return 10 // TODO calculate result
+    let win = 0
+    if (bet.betType == 'single') {
+      if (bet.secondType == 'double') {
+        if (first == bet.position.horizontal && second == bet.position.vertical) {
+          win = bet.profit
+        }
+      }
+      else if (bet.secondType == 'positive') {
+        if (bet.position.vertical == 1) {
+          if (bet.position.horizontal === first) {
+            win = bet.profit
+          }
+        }
+        else if (bet.position.vertical == 2) {
+          if (bet.position.horizontal === second) {
+            win = bet.profit
+          }
+        }
+        else if (bet.position.vertical == 3) {
+          if (bet.position.horizontal === third) {
+            win = bet.profit
+          }
+        }
+      }
+      else if (bet.secondType == 'negative') {
+        if (bet.position.vertical == 1) {
+          if (bet.position.horizontal !== first) {
+            win = bet.profit
+          }
+        }
+        else if (bet.position.vertical == 2) {
+          if (bet.position.horizontal !== second) {
+            win = bet.profit
+          }
+        }
+        else if (bet.position.vertical == 3) {
+          if (bet.position.horizontal !== third) {
+            win = bet.profit
+          }
+        }
+      }
+    }
+    else if (bet.betType == 'double') {
+      if (bet.secondType == 'positive') {
+        if (first === bet.position.vertical || first === bet.position.horizontal) {
+          win = bet.profit
+        }
+      }
+      else if (bet.secondType == 'negative') {
+        if (first !== bet.position.vertical && first !== bet.position.horizontal) {
+          win = bet.profit
+        }
+      }
+    }
+
+    return win
   }
 
   calculateAmount(first, second, third, bets) {
-    if (first == second ||
-      first == third ||
-      second == third) {
-      return -1
-    }
-
     let amount = 0
     bets.forEach((bet) => {
       amount = amount + this.calculateResult(first, second, third, bet)
@@ -168,19 +219,23 @@ class Game {
   }
 
   calculateWinner(currentGame) {
+    this.calculating = true
     let bets = currentGame.bets
-    let bestAmount = -1
+    let bestAmount = this.calculateAmount(1, 2, 3, bets)
+    let winner = {}
 
     for (let i = 1; i <= dogCount; ++i) {
       for (let j = 1; j <= dogCount; ++j) {
         for (let k = 1; k <= dogCount; ++k) {
-          let amount = this.calculateAmount(i, j, k, bets)
-          if (bestAmount < amount) {
-            bestAmount = amount
-            this.winner = {
-              first: i,
-              second: j,
-              third: k
+          if (i !== j && i !== k && j !== k) {
+            let amount = this.calculateAmount(i, j, k, bets)
+            if (bestAmount > amount) {
+              bestAmount = amount
+              winner = {
+                first: i,
+                second: j,
+                third: k
+              }
             }
           }
         }
@@ -191,16 +246,13 @@ class Game {
     if (bestAmount = -1) {
       // TODO: notify clients that something gone wrong
     }
-    return gameModel.findOne({status: 'live'})
-    .then((game)=> {
-      game.winner = this.winner
-      return game.save()
-    })
-
+    console.log(winner)
+    return gameModel.update({status: 'live'}, {$set: {winner: winner}})
   }
 
-  getWinner() {
-    return this.winner
+  async getWinner() {
+    let game =  await gameModel.findOne({status: 'live'})
+    return game.winner
   }
 
   addBet(bet) {

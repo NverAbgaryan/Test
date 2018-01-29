@@ -19,6 +19,7 @@
     "koa-bodyparser": "^4.2.0",
     "koa-router": "^7.0.1",
     "koa-static": "^4.0.2",
+    "lodash": "^4.17.4",
     "moment": "^2.20.1",
     "mongoose": "^4.13.10",
     "socket.io": "^2.0.4",
