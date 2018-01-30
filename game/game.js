@@ -211,9 +211,9 @@ class Game {
 
   calculateAmount(first, second, third, bets) {
     let amount = 0
-    bets.forEach((bet) => {
-      amount = amount + this.calculateResult(first, second, third, bet)
-    })
+    for(let i = 0; i < bets.length; ++i) {
+      amount = amount + this.calculateResult(first, second, third, bets[i])
+    }
 
     return amount
   }
@@ -221,16 +221,16 @@ class Game {
   calculateWinner(currentGame) {
     this.calculating = true
     let bets = currentGame.bets
-    let bestAmount = this.calculateAmount(1, 2, 3, bets)
+    let minAmount = Number.MAX_VALUE
     let winner = {}
 
     for (let i = 1; i <= dogCount; ++i) {
       for (let j = 1; j <= dogCount; ++j) {
         for (let k = 1; k <= dogCount; ++k) {
-          if (i !== j && i !== k && j !== k) {
+          if (i != j && i != k && j != k) {
             let amount = this.calculateAmount(i, j, k, bets)
-            if (bestAmount > amount) {
-              bestAmount = amount
+            if (minAmount > amount) {
+              minAmount = amount
               winner = {
                 first: i,
                 second: j,
@@ -243,7 +243,7 @@ class Game {
     }
 
     // this should not happen
-    if (bestAmount = -1) {
+    if (bestAmount = Number.MAX_VALUE) {
       // TODO: notify clients that something gone wrong
     }
     console.log(winner)
