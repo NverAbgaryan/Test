@@ -8,67 +8,76 @@ const first = 'first'
 const second = 'second'
 const third = 'third'
 
-let getSettings =  function (currentGame) {
-  let start = moment(currentGame.createdDate)
-  let diff = moment().diff(start, 'seconds')
-  if (diff < 90) {
-    return {
-      time: diff,
-      odds: currentGame.odds,
-      status: odd,
-      page: first
-    }
-  } else if (diff < 115) {
-    return {
-      time: diff,
-      odds: currentGame.odds,
-      status: odd,
-      page: second,
-      lastGames: [{
-        time: '',
-        gameId: '',
-        winner: {}
-      }]
-    }
-  } else if (diff < 120) {
-    if(!global.game.calculating){
-      global.game.calculateWinner(currentGame)
-    }
-    return {
-      time: diff,
-      odds: currentGame.odds,
-      status: block,
-      page: second,
-      lastGames: [{
-        time: '',
-        gameId: '',
-        winner: {}
-      }]
-    }
-  } else {
-    let winner = global.game.getWinner()
-    if (winner && winner.hasOwnProperty('first')) {
-      return {
+let getSettings = function (currentGame) {
+  return new Promise(function (resolve, reject) {
+
+    let start = moment(currentGame.createdDate)
+    let diff = moment().diff(start, 'seconds')
+    if (diff < 90) {
+      global.game.calculating = false
+      return resolve({
         time: diff,
         odds: currentGame.odds,
-        status: video,
-        page: third,
-        videoUrl: '',
-        winner: winner
+        status: odd,
+        page: first
+      })
+    } else if (diff < 115) {
+      return resolve({
+        time: diff,
+        odds: currentGame.odds,
+        status: odd,
+        page: second,
+        lastGames: [{
+          time: '',
+          gameId: '',
+          winner: {}
+        }]
+      })
+    } else if (diff < 120) {
+      if (!global.game.calculating) {
+        global.game.calculateWinner(currentGame)
       }
-    } else {
-      return {
+      return resolve({
         time: diff,
         odds: currentGame.odds,
         status: block,
         page: second,
-      }
-    }
+        lastGames: [{
+          time: '',
+          gameId: '',
+          winner: {}
+        }]
+      })
+    } else {
+      return global.game.getWinner().then(function (winner) {
+        console.log(winner)
+        if (winner && winner.hasOwnProperty('first')) {
+          return resolve({
+            time: diff,
+            odds: currentGame.odds,
+            status: video,
+            page: third,
+            videoUrl: '',
+            winner: winner
+          })
+        } else {
+          return resolve({
+            time: diff,
+            odds: currentGame.odds,
+            status: block,
+            page: second,
+          })
+        }
+      })
 
-  }
+
+    }
+  })
+
 }
 
-module.exports = (io) => {
+module.exports = (io) =>
+{
 
   io.on('connection', function (client) {
     console.log('Client connected...')
@@ -76,7 +85,9 @@ module.exports = (io) => {
     setInterval(function () {
       gameModel.findOne({status: 'live'})
       .then(function (currentGame) {
-        client.emit('odds', getSettings(currentGame))
+        getSettings(currentGame).then(function (result) {
+          client.emit('odds',result )
+        })
       })
     }, 1000)
     client.on('join', function (mess) {

@@ -11,3 +11,4 @@
 .env
 /npm-debug.log
 undefinedalgolift-app.log
+/assets

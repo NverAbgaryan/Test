@@ -154,40 +154,40 @@ class Game {
     let win = 0
     if (bet.betType == 'single') {
       if (bet.secondType == 'double') {
-        if (first == bet.position.horizontal && second == bet.position.vertical) {
+        if (first == bet.position.vertical && second == bet.position.horizontal) {
           win = bet.profit
         }
       }
       else if (bet.secondType == 'positive') {
-        if (bet.position.vertical == 1) {
-          if (bet.position.horizontal === first) {
+        if (bet.position.horizontal == 1) {
+          if (bet.position.vertical === first) {
             win = bet.profit
           }
         }
-        else if (bet.position.vertical == 2) {
-          if (bet.position.horizontal === second) {
+        else if (bet.position.horizontal == 2) {
+          if (bet.position.vertical === second) {
             win = bet.profit
           }
         }
-        else if (bet.position.vertical == 3) {
-          if (bet.position.horizontal === third) {
+        else if (bet.position.horizontal == 3) {
+          if (bet.position.vertical === third) {
             win = bet.profit
           }
         }
       }
       else if (bet.secondType == 'negative') {
-        if (bet.position.vertical == 1) {
-          if (bet.position.horizontal !== first) {
+        if (bet.position.horizontal == 1) {
+          if (bet.position.vertical !== first) {
             win = bet.profit
           }
         }
-        else if (bet.position.vertical == 2) {
-          if (bet.position.horizontal !== second) {
+        else if (bet.position.horizontal == 2) {
+          if (bet.position.vertical !== second) {
             win = bet.profit
           }
         }
-        else if (bet.position.vertical == 3) {
-          if (bet.position.horizontal !== third) {
+        else if (bet.position.horizontal == 3) {
+          if (bet.position.vertical !== third) {
             win = bet.profit
           }
         }
@@ -195,12 +195,12 @@ class Game {
     }
     else if (bet.betType == 'double') {
       if (bet.secondType == 'positive') {
-        if (first === bet.position.vertical || first === bet.position.horizontal) {
+        if (first === bet.position.horizontal || first === bet.position.vertical) {
           win = bet.profit
         }
       }
       else if (bet.secondType == 'negative') {
-        if (first !== bet.position.vertical && first !== bet.position.horizontal) {
+        if (first !== bet.position.horizontal && first !== bet.position.vertical) {
           win = bet.profit
         }
       }
@@ -243,16 +243,24 @@ class Game {
     }
 
     // this should not happen
-    if (bestAmount = Number.MAX_VALUE) {
+    if (minAmount == Number.MAX_VALUE) {
       // TODO: notify clients that something gone wrong
     }
     console.log(winner)
-    return gameModel.update({status: 'live'}, {$set: {winner: winner}})
+    console.log(minAmount)
+    gameModel.update({status: 'live'}, {$set: {winner: winner}}).then(function (res) {
+      console.log(res)
+    })
   }
 
-  async getWinner() {
-    let game =  await gameModel.findOne({status: 'live'})
-    return game.winner
+   getWinner() {
+    return new Promise(function (resulv,reject) {
+      gameModel.findOne({status: 'live'}).then(function (game) {
+
+        resulv(game.winner)
+      })
+    })
+
   }
 
   addBet(bet) {
