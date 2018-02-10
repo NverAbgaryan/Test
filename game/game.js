@@ -22,7 +22,7 @@ let generateOdds = function () {
   let firstPlace = []
   let firstPlaceNegative = []
 
-  let min = 1.7
+  let min = 2.7
   let max = 4
   let profit = 0
 
@@ -40,6 +40,13 @@ let generateOdds = function () {
     min = max
     max += 0.5
   }
+
+  oddsForFirstPlace = oddsForFirstPlace.sort(function() {
+    return 0.5 - Math.random();
+  });
+
+  let idx1 = oddsForFirstPlace.indexOf(Math.min(...oddsForFirstPlace));
+
 
   console.log(`The percentage of profit is ${profit}`)
 
