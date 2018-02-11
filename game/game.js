@@ -31,8 +31,8 @@ let generateOdds = function () {
 
   for (let i = 0; i < dogCount; ++i) {
     let oddForFirstPlace = getRandomArbitrary(min, max).toFixed(2)
-    odd2.push(getRandomArbitrary(min, max))
-    odd3.push(getRandomArbitrary(min, max))
+    odd2.push(getRandomArbitrary(min, max).toFixed(2))
+    odd3.push(getRandomArbitrary(min, max).toFixed(2))
 
     profit += 1 / oddForFirstPlace
 
@@ -41,12 +41,42 @@ let generateOdds = function () {
     max += 0.5
   }
 
+  let i = oddsForFirstPlace[0]
+  let j = oddsForFirstPlace[1]
+  let k = oddsForFirstPlace[2]
+
   oddsForFirstPlace = oddsForFirstPlace.sort(function() {
     return 0.5 - Math.random();
   });
 
-  let idx1 = oddsForFirstPlace.indexOf(Math.min(...oddsForFirstPlace));
+  i = oddsForFirstPlace.indexOf(i)
+  j = oddsForFirstPlace.indexOf(j)
+  k = oddsForFirstPlace.indexOf(k)
 
+  let tmp = null;
+  tmp = odd2[2]
+  odd2[2] = odd2[i]
+  odd2[i] = tmp
+
+  tmp = odd2[1]
+  odd2[1] = odd2[j]
+  odd2[j] = tmp
+
+  tmp = odd2[3]
+  odd2[3] = odd2[k]
+  odd2[k] = tmp
+
+  tmp = odd3[2]
+  odd3[2] = odd3[i]
+  odd3[i] = tmp
+
+  tmp = odd3[3]
+  odd3[3] = odd3[j]
+  odd3[j] = tmp
+
+  tmp = odd3[1]
+  odd3[1] = odd3[k]
+  odd3[k] = tmp
 
   console.log(`The percentage of profit is ${profit}`)
 
@@ -97,13 +127,6 @@ let generateOdds = function () {
       firstPlace.push((1 / (1 / oddsForFirstPlace[i] + 1 / oddsForFirstPlace[j])).toFixed(2))
     }
   }
-
-  oddsForThirdPlaceNegative = oddsForThirdPlace.map((odd) => {
-      let reverse = (1 / (profit - 1 / odd) - 0.02).toFixed(2)
-
-      return reverse < 1 ? 1 : reverse
-    }
-  )
 
   firstPlaceNegative = firstPlace.map((odd) => {
     let reverse = (1 / (profit - 1 / odd) - 0.02).toFixed(2)
